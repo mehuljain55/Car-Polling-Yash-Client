@@ -4,11 +4,12 @@ import API_BASE_URL from "../Config/Config";
 import "bootstrap/dist/css/bootstrap.min.css";
 import YashLogo from "../Image/yash.jpg"; 
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import icons for eye and eye-slash
+import axios from "axios";
 
 const Login = ({ setLoginStatus }) => {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -16,28 +17,23 @@ const Login = ({ setLoginStatus }) => {
     e.preventDefault();
     setError(null);
     sessionStorage.clear();
-
+  
     try {
-      const response = await fetch(`${API_BASE_URL}/user/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+      const response = await axios.get(`${API_BASE_URL}/user/login`, {
+        params: {
+          emailId: userId,
+          password: password,
         },
-        body: new URLSearchParams({ userId, password }),
       });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const result = await response.json();
+  
+      const result = response.data;
       console.log("Response Result:", result);
-
+  
       if (result.status === "success") {
         sessionStorage.setItem("token", result.payload.token);
         sessionStorage.setItem("user", JSON.stringify(result.payload.user));
-        setLoginStatus(true); // Notify App.js of successful login
-        navigate("/dashboard", { replace: true }); // Redirect to dashboard
+        setLoginStatus(true);
+        navigate("/dashboard", { replace: true });
       } else {
         setError(result.message || "Login failed");
       }
@@ -46,7 +42,7 @@ const Login = ({ setLoginStatus }) => {
       setError("An error occurred. Please try again.");
     }
   };
-
+  
   const handleRegister = () => {
     navigate("/register", { replace: true }); // Redirect to dashboard
   };

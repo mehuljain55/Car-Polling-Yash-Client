@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import API_BASE_URL from "../Config/Config";
 import axios from "axios";
 
-const Register = () => {
+const AddVechile = () => {
   const [formData, setFormData] = useState({
     emailId: "",
     name: "",
@@ -11,7 +11,6 @@ const Register = () => {
     password: "",
     haveLicence: false,
     licenceImage: null,
-    licenceNo: "",
   });
 
   const handleChange = (e) => {
@@ -39,7 +38,6 @@ const Register = () => {
             name: formData.name,
             mobileNo: formData.mobileNo,
             password: formData.password,
-            licenceNo: formData.licenceNo,
           }),
         ],
         { type: "application/json" }
@@ -55,9 +53,8 @@ const Register = () => {
         formDataToSend,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-      alert(response.data.message);
+      alert("User registered successfully!");
     } catch (error) {
-      console.log(error)
       alert("Error registering user");
     }
   };
@@ -125,7 +122,6 @@ const Register = () => {
             </label>
           </div>
           {formData.haveLicence && (
-            <>
             <div className="mb-3">
               <label className="form-label">Upload Licence</label>
               <input
@@ -134,23 +130,7 @@ const Register = () => {
                 accept="image/*"
                 onChange={handleFileChange}
               />
-
-              
             </div>
-
-            <div className="mb-3">
-            <label className="form-label">Licence No</label>
-            <input
-              type="text"
-              className="form-control"
-              name="licenceNo"
-              value={formData.licenceNo}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-            </>
           )}
           <button type="submit" className="btn btn-primary w-100">
             Register
@@ -161,4 +141,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default AddVechile;
