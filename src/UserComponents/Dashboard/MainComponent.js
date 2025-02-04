@@ -3,6 +3,9 @@ import YashLogo from "../Image/yash.jpg";
 import {  Button, Dropdown } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import AddVechile from "../Vechile/AddVechile";
+import AddRoute from "../Vechile/AddRoutes";
+import RoutesList from "../Vechile/RoutesList";
+
 
 const MainComponent = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -35,6 +38,20 @@ const MainComponent = () => {
             <AddVechile />
           </div>
         );
+
+        case "addRoute":
+          return (
+            <div>
+              <AddRoute />
+            </div>
+          );
+
+          case "routesList":
+            return (
+              <div>
+                <RoutesList />
+              </div>
+            );
      
             
       default:
@@ -102,6 +119,40 @@ const MainComponent = () => {
                 </li>
                 
               </ul>
+
+              <ul className="list-unstyled px-3">
+                <li>
+                  <button
+                    className={`btn btn-link text-decoration-none w-100 text-start ${
+                      activeSection === "addRoute"
+                        ? "fw-bold text-primary"
+                        : "text-dark"
+                    }`}
+                    onClick={() => setActiveSection("addRoute")}
+                  >
+                    Add Route
+                  </button>
+                </li>
+                
+              </ul>
+
+
+              <ul className="list-unstyled px-3">
+                <li>
+                  <button
+                    className={`btn btn-link text-decoration-none w-100 text-start ${
+                      activeSection === "routesList"
+                        ? "fw-bold text-primary"
+                        : "text-dark"
+                    }`}
+                    onClick={() => setActiveSection("routesList")}
+                  >
+                    Route List
+                  </button>
+                </li>
+                
+              </ul>
+
             </>
           )}
           {user.role === "manager" && (

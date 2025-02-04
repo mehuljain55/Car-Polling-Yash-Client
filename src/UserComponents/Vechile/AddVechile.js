@@ -5,133 +5,132 @@ import axios from "axios";
 
 const AddVechile = () => {
   const [formData, setFormData] = useState({
-    emailId: "",
-    name: "",
-    mobileNo: "",
-    password: "",
-    haveLicence: false,
-    licenceImage: null,
+    vechileNo: "",
+    vechileType: "",
+    vechileName: "",
+    max_capacity: "",
   });
 
+
+  const [rcImage, setRcImage] = useState(null);
+
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleFileChange = (e) => {
-    setFormData({ ...formData, licenceImage: e.target.files[0] });
+    setRcImage(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    const token = sessionStorage.getItem('token');
 
     const formDataToSend = new FormData();
+    
     formDataToSend.append(
-      "user",
+      "request",
       new Blob(
         [
           JSON.stringify({
-            emailId: formData.emailId,
-            name: formData.name,
-            mobileNo: formData.mobileNo,
-            password: formData.password,
+            user: user,
+            token: token,
+            vechile: {
+              vechileNo: formData.vechileNo,
+              vechileType: formData.vechileType,
+              vechileName: formData.vechileName,
+              max_capacity: formData.max_capacity,
+            },
           }),
         ],
         { type: "application/json" }
       )
     );
 
-    if (formData.haveLicence && formData.licenceImage) {
-      formDataToSend.append("licenceImage", formData.licenceImage);
+    if (rcImage) {
+      formDataToSend.append("vechileImage", rcImage);
     }
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/user/register`,
+      const response = await axios.post(
+        `${API_BASE_URL}/vechile/addVechile`, 
         formDataToSend,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-      alert("User registered successfully!");
+      alert("Vehicle registered successfully!");
     } catch (error) {
-      alert("Error registering user");
+      alert("Error registering vehicle");
     }
   };
 
   return (
     <div className="container mt-5" style={{ maxWidth: "500px" }}>
       <div className="card shadow p-4" style={{ backgroundColor: "#e3f2fd" }}>
-        <h3 className="text-center text-primary">User Registration</h3>
+        <h3 className="text-center text-primary">Vehicle Registration</h3>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label">Email ID</label>
-            <input
-              type="email"
-              className="form-control"
-              name="emailId"
-              value={formData.emailId}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Name</label>
+            <label className="form-label">Vehicle No</label>
             <input
               type="text"
               className="form-control"
-              name="name"
-              value={formData.name}
+              name="vechileNo"
+              value={formData.vechileNo}
               onChange={handleChange}
               required
             />
           </div>
+
           <div className="mb-3">
-            <label className="form-label">Mobile No</label>
+            <label className="form-label">Vehicle Name</label>
             <input
-              type="tel"
+              type="text"
               className="form-control"
-              name="mobileNo"
-              value={formData.mobileNo}
+              name="vechileName"
+              value={formData.vechileName}
               onChange={handleChange}
               required
             />
           </div>
+
           <div className="mb-3">
-            <label className="form-label">Password</label>
-            <input
-              type="password"
+            <label className="form-label">Vehicle Type</label>
+            <select
               className="form-control"
-              name="password"
-              value={formData.password}
+              name="vechileType"
+              value={formData.vechileType}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select Type</option>
+              <option value="two_wheeler">Two Wheeler</option>
+              <option value="four_wheeler">Four Wheeler</option>
+            </select>
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Max Capacity</label>
+            <input
+              type="number"
+              className="form-control"
+              name="max_capacity"
+              value={formData.max_capacity}
               onChange={handleChange}
               required
             />
           </div>
-          <div className="form-check mb-3">
+
+          <div className="mb-3">
+            <label className="form-label">Upload RC</label>
             <input
-              type="checkbox"
-              className="form-check-input"
-              id="haveLicence"
-              name="haveLicence"
-              checked={formData.haveLicence}
-              onChange={handleChange}
+              type="file"
+              className="form-control"
+              accept="image/*"
+              onChange={handleFileChange}
             />
-            <label className="form-check-label" htmlFor="haveLicence">
-              Have Driving Licence?
-            </label>
           </div>
-          {formData.haveLicence && (
-            <div className="mb-3">
-              <label className="form-label">Upload Licence</label>
-              <input
-                type="file"
-                className="form-control"
-                accept="image/*"
-                onChange={handleFileChange}
-              />
-            </div>
-          )}
+
           <button type="submit" className="btn btn-primary w-100">
             Register
           </button>
