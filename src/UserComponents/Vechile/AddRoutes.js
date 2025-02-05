@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import API_BASE_URL from '../Config/Config';
 
@@ -10,7 +10,49 @@ const AddRoute = () => {
     endDate: '',
     cost: '',
     pickUpPlaces: [{ place: '', time: '' }],
+    vechileNo: '',
   });
+
+  const [offices, setOffices] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
+  const [city, setCity] = useState(""); // City state to be updated when destination is selected
+
+  useEffect(() => {
+    const fetchOffices = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/user/officeList`);
+        if (response.data.status === 'success') {
+          setOffices(response.data.payload);
+        }
+      } catch (error) {
+        console.error('Error fetching offices', error);
+      }
+    };
+
+    const fetchVehicles = async () => {
+      const user = JSON.parse(sessionStorage.getItem('user'));
+      const token = sessionStorage.getItem('token');
+      try {
+        const response = await axios.post(`${API_BASE_URL}/user/getVechileList`, { user, token });
+        if (response.data.status === 'success') {
+          setVehicles(response.data.payload);
+        }
+      } catch (error) {
+        console.error('Error fetching vehicles', error);
+      }
+    };
+
+    fetchOffices();
+    fetchVehicles();
+  }, []);
+
+  // useEffect to update city when destination changes
+  useEffect(() => {
+    const selectedOffice = offices.find((office) => office.officeId === formData.destination);
+    if (selectedOffice) {
+      setCity(selectedOffice.city); // Set the city based on the selected office
+    }
+  }, [formData.destination, offices]); // Dependencies: run when destination or offices change
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,10 +84,9 @@ const AddRoute = () => {
     const user = JSON.parse(sessionStorage.getItem('user'));
     const token = sessionStorage.getItem('token');
 
-
     const requestPayload = {
-      user: user,
-      token: token,
+      user,
+      token,
       routes: {
         source: formData.source,
         destination: formData.destination,
@@ -57,16 +98,25 @@ const AddRoute = () => {
           time: p.time,
         })),
       },
+      vechileNo: formData.vechileNo,
+      city: city, 
     };
 
+    console.log(requestPayload);
+
     try {
-      const response = await axios.post(`${API_BASE_URL}/user/addRoute`, requestPayload, {
+      const response = await axios.post(`${API_BASE_URL}/routes/addRoute`, requestPayload, {
         headers: { 'Content-Type': 'application/json' },
       });
       alert(response.data.message);
     } catch (error) {
       alert('Error adding route');
     }
+  };
+
+  const handleDestinationChange = (e) => {
+    const selectedOfficeId = e.target.value;
+    setFormData({ ...formData, destination: selectedOfficeId });
   };
 
   return (
@@ -88,14 +138,20 @@ const AddRoute = () => {
 
           <div className="mb-3">
             <label className="form-label">Destination</label>
-            <input
-              type="text"
+            <select
               className="form-control"
               name="destination"
               value={formData.destination}
-              onChange={handleChange}
+              onChange={handleDestinationChange} // Updated handler
               required
-            />
+            >
+              <option value="">Select Destination</option>
+              {offices.map((office) => (
+                <option key={office.officeId} value={office.officeId}>
+                  {office.officeId} - {office.city}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="mb-3">
@@ -132,6 +188,24 @@ const AddRoute = () => {
               onChange={handleChange}
               required
             />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Select Vehicle</label>
+            <select
+              className="form-control"
+              name="vechileNo"
+              value={formData.vechileNo}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select Vehicle</option>
+              {vehicles.map((vehicle) => (
+                <option key={vehicle.vechileNo} value={vehicle.vechileNo}>
+                  {vehicle.vechileNo} - {vehicle.vechileName} ({vehicle.vechileType})
+                </option>
+              ))}
+            </select>
           </div>
 
           <h5>Pickup Places</h5>
