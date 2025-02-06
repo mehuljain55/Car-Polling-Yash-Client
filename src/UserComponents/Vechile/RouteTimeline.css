@@ -1,0 +1,39 @@
+.timeline {
+    position: relative;
+    padding: 20px;
+    margin-left: 30px;
+}
+
+.timeline-item {
+    display: flex;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.timeline-dot {
+    background-color: #007bff;
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    left: -22px;
+    top: 5px;
+}
+
+.timeline-content {
+    background-color: #f0f8ff;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-left: 10px;
+    width: 100%;
+}
+
+.timeline-content h5 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.timeline-item:last-child .timeline-dot {
+    background-color: #28a745; /* Different color for the final item */
+}

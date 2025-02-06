@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Container, Form, Button, Table } from "react-bootstrap";
 import API_BASE_URL from "../Config/Config";
+import RouteTimeline from "./RouteTimeline";
 
 const RoutesList = () => {
     const [source, setSource] = useState("");
@@ -9,6 +10,41 @@ const RoutesList = () => {
     const [city, setCity] = useState(""); // To store selected city
     const [routes, setRoutes] = useState([]);
     const [offices, setOffices] = useState([]); // To store offices list
+
+
+    const [selectedRoute, setSelectedRoute] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+
+    const handleView = (route) => {
+        console.log('View Routes'); 
+        setSelectedRoute(route);
+        setShowModal(true);
+    };
+    
+
+    const createBooking = async (routeId) => {
+     
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        const token = sessionStorage.getItem('token');
+    
+        const requestData = {
+            user: user,
+            token: token, 
+            routeId: routeId, 
+        };
+
+        try {
+            const response = await axios.post(`${API_BASE_URL}/user/createBooking`, requestData);
+            if (response.data.status === "success") {
+                alert("Booking confirmed!");
+            } else {
+                alert(response.data.message || "Failed to create booking.");
+            }
+        } catch (error) {
+            console.error("Error creating booking:", error);
+            alert("An error occurred while creating the booking.");
+        }
+    };
 
     // Fetch the list of offices
     useEffect(() => {
@@ -106,12 +142,15 @@ const RoutesList = () => {
                             <td>{route.pickUpPlaces.map(p => p.places).join(", ")}</td>
                             <td>{route.cost}</td>
                             <td>
-                                <Button>Book</Button>
+                                <Button onClick={() => createBooking(route.routeId)}>Book</Button>
+                                <Button onClick={() => handleView(route)}>View</Button>
+                            
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </Table>
+            <RouteTimeline show={showModal} handleClose={() => setShowModal(false)} route={selectedRoute} />
         </Container>
     );
 };

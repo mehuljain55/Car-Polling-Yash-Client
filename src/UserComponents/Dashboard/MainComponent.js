@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import AddVechile from "../Vechile/AddVechile";
 import AddRoute from "../Vechile/AddRoutes";
 import RoutesList from "../Vechile/RoutesList";
+import BuddyInfo from "../Vechile/BuddyInfo";
 
 
 const MainComponent = () => {
@@ -50,6 +51,13 @@ const MainComponent = () => {
             return (
               <div>
                 <RoutesList />
+              </div>
+            );
+
+            case "buddyInfo":
+            return (
+              <div>
+                <BuddyInfo />
               </div>
             );
      
@@ -136,6 +144,22 @@ const MainComponent = () => {
                 
               </ul>
 
+
+              <ul className="list-unstyled px-3">
+                <li>
+                  <button
+                    className={`btn btn-link text-decoration-none w-100 text-start ${
+                      activeSection === "buddyInfo"
+                        ? "fw-bold text-primary"
+                        : "text-dark"
+                    }`}
+                    onClick={() => setActiveSection("buddyInfo")}
+                  >
+                    Buddy Info
+                  </button>
+                </li>
+                
+              </ul>
 
               <ul className="list-unstyled px-3">
                 <li>
