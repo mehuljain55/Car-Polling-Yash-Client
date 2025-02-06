@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardBody, CardTitle, CardText, Badge, Row, Col, Spinner, Alert } from 'reactstrap';
-import { FaUserTie, FaUserFriends } from 'react-icons/fa'; // Import the icons
+import { FaUserTie, FaUserFriends } from 'react-icons/fa';
 import API_BASE_URL from '../Config/Config';
 import axios from 'axios';
 
@@ -67,7 +67,6 @@ const BuddyInfo = () => {
                   <Badge color={buddy.buddyTag === 'owner' ? 'primary' : 'secondary'} className="mr-2">
                     {buddy.buddyTag === 'owner' ? 'Owner' : 'Buddy'}
                   </Badge>
-                  {/* Render appropriate icon */}
                   {buddy.buddyTag === 'owner' ? (
                     <FaUserTie color="blue" size={24} />
                   ) : (

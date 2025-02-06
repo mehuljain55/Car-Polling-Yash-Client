@@ -5,8 +5,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import AddVechile from "../Vechile/AddVechile";
 import AddRoute from "../Vechile/AddRoutes";
 import RoutesList from "../Vechile/RoutesList";
-import BuddyInfo from "../Vechile/BuddyInfo";
-
+import BuddyInfo from "../Bookings/BuddyInfo";
+import BookingDashboard from "../Bookings/BookingDashboard";
 
 const MainComponent = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -20,19 +20,19 @@ const MainComponent = () => {
 
   const renderSection = () => {
     switch (activeSection) {
-      // case "dashboard":
-      //   return (
-      //     <div>
-      //     {user.role === "user" ? (
-      //       <Dashboard activeSection={setActiveSection} />
-      //     ) : user.role === "admin" ? (
-      //       <SuperAdminDashboard activeSection={setActiveSection} />
-      //     ) : (
-      //       <UserDashboard />
-      //     )}
-      //   </div>
+      case "dashboard":
+        return (
+          <div>
+          {user.role === "user" ? (
+            <BookingDashboard activeSection={setActiveSection} />
+          ) : user.role === "admin" ? (
+           <BookingDashboard activeSection={setActiveSection} />
+          ) : (
+            <BookingDashboard />
+          )}
+        </div>
         
-      //   );
+        );
       case "addVechile":
         return (
           <div>
