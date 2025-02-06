@@ -70,6 +70,8 @@ const BookingDashboard = () => {
             const response = await axios.post(`${API_BASE_URL}/user/findMyBookings`, { user, token });
             if (response.data.status === "success") {
                 setBooking(response.data.payload.routes);
+            }else{
+                setBooking(null);
             }
         } catch (error) {
             console.error("Error fetching bookings", error);
@@ -103,7 +105,7 @@ const BookingDashboard = () => {
                 </Row>
                 <Row className="mt-3">
                     <Col md={6}><strong>Vehicle:</strong> {booking.vechile.vechileName} ({booking.vechile.vechileNo})</Col>
-                    <Col md={6}><strong>Driver:</strong> {booking.user.name} ({booking.user.mobileNo})</Col>
+                    <Col md={6}><strong>Pickup Contact:</strong> {booking.user.name} ({booking.user.mobileNo})</Col>
                 </Row>
                 <Row className="mt-3">
                     <Col md={6}><strong>Source:</strong> {booking.source}</Col>

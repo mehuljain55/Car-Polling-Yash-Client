@@ -7,6 +7,7 @@ import AddRoute from "../Vechile/AddRoutes";
 import RoutesList from "../Vechile/RoutesList";
 import BuddyInfo from "../Bookings/BuddyInfo";
 import BookingDashboard from "../Bookings/BookingDashboard";
+import VechileApprovalList from "../ManagerComponents/VechileApprovalList";
 
 const MainComponent = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -60,6 +61,13 @@ const MainComponent = () => {
                 <BuddyInfo />
               </div>
             );
+
+            case "vechileApproval":
+              return (
+                <div>
+                  <VechileApprovalList />
+                </div>
+              );
      
             
       default:
@@ -179,50 +187,23 @@ const MainComponent = () => {
 
             </>
           )}
-          {user.role === "manager" && (
+          {user.role === "admin" && (
             <>
               <h6 className="px-4 text-secondary">Manager Only</h6>
               <ul className="list-unstyled px-3">
                 <li>
                   <button
                     className={`btn btn-link text-decoration-none w-100 text-start ${
-                      activeSection === "approveRequest"
+                      activeSection === "vechileApproval"
                         ? "fw-bold text-primary"
                         : "text-dark"
                     }`}
-                    onClick={() => setActiveSection("approveRequest")}
+                    onClick={() => setActiveSection("vechileApproval")}
                   >
-                    Cabin Approval
+                    Vechile Approval
                   </button>
                 </li>
-                <li>
-                  <button
-                    className={`btn btn-link text-decoration-none w-100 text-start ${
-                      activeSection === "approveRequestVip"
-                        ? "fw-bold text-primary"
-                        : "text-dark"
-                    }`}
-                    onClick={() => setActiveSection("approveRequestVip")}
-                  >
-                    Cabin Approval VIP
-                  </button>
-                </li>
-
-                <li>
-                  <button
-                    className={`btn btn-link text-decoration-none w-100 text-start ${
-                      activeSection === "custom_cabin_reservation"
-                        ? "fw-bold text-primary"
-                        : "text-dark"
-                    }`}
-                    onClick={() => setActiveSection("custom_cabin_reservation")}
-                  >
-                    Cabin Reservation 
-                  </button>
-                </li>
-
-
-                
+  
                 <li>
                   <button
                     className={`btn btn-link text-decoration-none w-100 text-start ${
@@ -247,34 +228,9 @@ const MainComponent = () => {
                     View Booking
                   </button>
                 </li>
-                <li>
-                  <button
-                    className={`btn btn-link text-decoration-none w-100 text-start ${
-                      activeSection === "viewAllCabinRequest"
-                        ? "fw-bold text-primary"
-                        : "text-dark"
-                    }`}
-                    onClick={() => setActiveSection("viewAllCabinRequest")}
-                  >
-                    Cabin Request View
-                  </button>
-                </li>
+  
 
-           
-
-
-                <li>
-                  <button
-                    className={`btn btn-link text-decoration-none w-100 text-start ${
-                      activeSection === "addCabin"
-                        ? "fw-bold text-primary"
-                        : "text-dark"
-                    }`}
-                    onClick={() => setActiveSection("addCabin")}
-                  >
-                     Cabin Manager
-                  </button>
-                </li>
+          
               </ul>
             </>
           )}
