@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
-import "./RouteTimeline.css"; // We'll define custom styles for the timeline
+import "./RouteTimeline.css";
 
 const RouteTimeline = ({ show, handleClose, route }) => {
     if (!route) return null;

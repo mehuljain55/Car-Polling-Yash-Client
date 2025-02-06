@@ -5,7 +5,7 @@ import RouteTimeline from "../Vechile/RouteTimeline";
 import API_BASE_URL from "../Config/Config";
 
 
-const BookingRouteTimelines = ({ route }) => {
+const BookingRouteTimelines = ({ route,fetchBookings }) => {
     if (!route) return <p>No route data available</p>;
 
     const requestBookingCancellation = async () => {
@@ -19,6 +19,7 @@ const BookingRouteTimelines = ({ route }) => {
             }else{
                 alert(response.data.message);
             }
+            fetchBookings();
         } catch (error) {
             console.error("Error fetching bookings", error);
         }
@@ -61,24 +62,36 @@ const BookingRouteTimelines = ({ route }) => {
 const BookingDashboard = () => {
     const [booking, setBooking] = useState(null);
 
-    useEffect(() => {
-        const fetchBookings = async () => {
-            try {
-                const user = JSON.parse(sessionStorage.getItem('user'));
-                const token = sessionStorage.getItem('token');
+    const fetchBookings = async () => {
+        try {
+            const user = JSON.parse(sessionStorage.getItem('user'));
+            const token = sessionStorage.getItem('token');
 
-                const response = await axios.post(`${API_BASE_URL}/user/findMyBookings`, { user, token });
-                if (response.data.status === "success") {
-                    setBooking(response.data.payload.routes);
-                }
-            } catch (error) {
-                console.error("Error fetching bookings", error);
+            const response = await axios.post(`${API_BASE_URL}/user/findMyBookings`, { user, token });
+            if (response.data.status === "success") {
+                setBooking(response.data.payload.routes);
             }
-        };
+        } catch (error) {
+            console.error("Error fetching bookings", error);
+        }
+    };
+  
+
+    useEffect(() => {
         fetchBookings();
     }, []);
 
-    if (!booking) return <p>Loading...</p>;
+    if (!booking) {
+        return (
+            <Container className="mt-4">
+                <h2>Booking Dashboard</h2>
+                <div className="alert alert-warning" role="alert">
+                    No booking found.
+                </div>
+            </Container>
+        );
+    }
+
 
     return (
         <Container className="mt-4">
@@ -98,7 +111,8 @@ const BookingDashboard = () => {
                 </Row>
                 <Row className="mt-4">
                     <Col>
-                        <BookingRouteTimelines route={booking} />
+                    <BookingRouteTimelines route={booking} fetchBookings={fetchBookings} />
+
                     </Col>
                 </Row>
             </Card>

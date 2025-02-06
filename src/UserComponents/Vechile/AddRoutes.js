@@ -46,13 +46,12 @@ const AddRoute = () => {
     fetchVehicles();
   }, []);
 
-  // useEffect to update city when destination changes
   useEffect(() => {
     const selectedOffice = offices.find((office) => office.officeId === formData.destination);
     if (selectedOffice) {
-      setCity(selectedOffice.city); // Set the city based on the selected office
+      setCity(selectedOffice.city); 
     }
-  }, [formData.destination, offices]); // Dependencies: run when destination or offices change
+  }, [formData.destination, offices]); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;

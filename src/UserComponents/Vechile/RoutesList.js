@@ -7,9 +7,9 @@ import RouteTimeline from "./RouteTimeline";
 const RoutesList = () => {
     const [source, setSource] = useState("");
     const [destination, setDestination] = useState("");
-    const [city, setCity] = useState(""); // To store selected city
+    const [city, setCity] = useState(""); 
     const [routes, setRoutes] = useState([]);
-    const [offices, setOffices] = useState([]); // To store offices list
+    const [offices, setOffices] = useState([]); 
 
 
     const [selectedRoute, setSelectedRoute] = useState(null);
@@ -46,7 +46,6 @@ const RoutesList = () => {
         }
     };
 
-    // Fetch the list of offices
     useEffect(() => {
         const fetchOffices = async () => {
             try {
@@ -62,7 +61,6 @@ const RoutesList = () => {
         fetchOffices();
     }, []);
 
-    // Fetch routes based on source, destination (officeId), and city
     const fetchRoutes = async () => {
         try {
             const response = await axios.get(`${API_BASE_URL}/routes/findRoutes`, {
