@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import API_BASE_URL from '../Config/Config';
+import TimeInput from '../TimeInput/TimeInput';
 
 const AddRoute = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const AddRoute = () => {
     cost: '',
     pickUpPlaces: [{ place: '', time: '' }],
     vechileNo: '',
+    bookingType:''
   });
 
   const [offices, setOffices] = useState([]);
@@ -92,6 +94,7 @@ const AddRoute = () => {
         startDate: formData.startDate,
         endDate: formData.endDate,
         cost: parseInt(formData.cost),
+        bookingType: formData.bookingType,
         pickUpPlaces: formData.pickUpPlaces.map((p) => ({
           places: p.place,
           time: p.time,
@@ -207,6 +210,22 @@ const AddRoute = () => {
             </select>
           </div>
 
+          <div className="mb-3">
+  <label className="form-label">Booking Type</label>
+  <select
+    className="form-control"
+    name="bookingType"
+    value={formData.bookingType}
+    onChange={handleChange}
+    required
+  >
+    <option value="">Select</option>
+    <option value="available">Open for All</option>
+    <option value="reserved">RESERVED</option>
+  </select>
+</div>
+
+
           <h5>Pickup Places</h5>
           {formData.pickUpPlaces.map((pickup, index) => (
             <div key={index} className="mb-3 d-flex">
@@ -218,13 +237,8 @@ const AddRoute = () => {
                 onChange={(e) => handlePickupChange(index, 'place', e.target.value)}
                 required
               />
-              <input
-                type="time"
-                className="form-control me-2"
-                value={pickup.time}
-                onChange={(e) => handlePickupChange(index, 'time', e.target.value)}
-                required
-              />
+              <TimeInput value={pickup.time} onChange={(newTime) => handlePickupChange(index, 'time', newTime)} />
+
               {formData.pickUpPlaces.length > 1 && (
                 <button type="button" className="btn btn-danger" onClick={() => removePickupPlace(index)}>
                   X
