@@ -10,6 +10,7 @@ import BookingDashboard from "../Bookings/BookingDashboard";
 import VechileApprovalList from "../ManagerComponents/VechileApprovalList";
 import UpdateProfile from "../UserProfile/UpdateProfile";
 import BookingRequestApproval from "../Bookings/BookingRequestApproval";
+import UserApprovalList from "../ManagerComponents/UserApprovalList";
 
 const MainComponent = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -61,6 +62,13 @@ const MainComponent = () => {
     </div>
   );
 
+  case "UserApprovalList":
+    return (
+      <div>
+        <UserApprovalList />
+      </div>
+    );
+  
 
           case "routesList":
             return (
@@ -238,27 +246,16 @@ const MainComponent = () => {
                 <li>
                   <button
                     className={`btn btn-link text-decoration-none w-100 text-start ${
-                      activeSection === "approveUserRequest"
+                      activeSection === "UserApprovalList"
                         ? "fw-bold text-primary"
                         : "text-dark"
                     }`}
-                    onClick={() => setActiveSection("approveUserRequest")}
+                    onClick={() => setActiveSection("UserApprovalList")}
                   >
                     User Approval
                   </button>
                 </li>
-                <li>
-                  <button
-                    className={`btn btn-link text-decoration-none w-100 text-start ${
-                      activeSection === "viewBooking"
-                        ? "fw-bold text-primary"
-                        : "text-dark"
-                    }`}
-                    onClick={() => setActiveSection("viewBooking")}
-                  >
-                    View Booking
-                  </button>
-                </li>
+             
   
 
           

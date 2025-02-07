@@ -68,7 +68,7 @@ const UserApprovalList = () => {
 
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/admin/userApprovalList`, userApprovalRequest);
+      const response = await axios.post(`${API_BASE_URL}/manager/userApprovalList`, userApprovalRequest);
 
       if (response.data.status === 'success') {
           setUserApprovalRequestList(response.data.payload);

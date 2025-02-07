@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import API_BASE_URL from "../Config/Config";
 import axios from "axios";
+
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +18,8 @@ const Register = () => {
   });
 
   const [offices, setOffices] = useState([]); 
+  const [successMessage, setSuccessMessage] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOffices = async () => {
@@ -71,6 +75,12 @@ const Register = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       alert(response.data.message);
+      if(response.data.status="success")
+      {
+        setSuccessMessage("Registration successful! Redirecting to login...");
+        setTimeout(() => navigate("/login", { replace: true }), 2000);
+
+      }
     } catch (error) {
       console.log(error);
       alert("Error registering user");
@@ -184,6 +194,9 @@ const Register = () => {
             Register
           </button>
         </form>
+        {successMessage && (
+          <p className="text-success text-center mt-3">{successMessage}</p>
+        )}
       </div>
     </div>
   );

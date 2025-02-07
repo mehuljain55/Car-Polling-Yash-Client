@@ -1,35 +1,54 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Container, Alert } from 'react-bootstrap';
+import { Table, Container, Alert, Button } from 'react-bootstrap';
 import API_BASE_URL from '../Config/Config';
 
-const BookingRequest = () => {
- 
+const BookingRequestApproval = () => {
   const [requests, setRequests] = useState([]);
   const [error, setError] = useState('');
 
   const fetchBookingRequest = async () => {
-
     const user = JSON.parse(sessionStorage.getItem('user'));
     const token = sessionStorage.getItem('token');
 
     try {
+      const response = await axios.post(`${API_BASE_URL}/user/findBookingRequest`, {
+        user,
+        token,
+      });
 
-    const response = await axios.post(`${API_BASE_URL}/user/findBookingRequest`, {
-      user,
-      token,
-    });
-    if (response.data.status === 'success') {
-      setRequests(response.data.payload);
-    } else {
-      setError(response.data.message || 'Failed to fetch booking requests');
+      if (response.data.status === 'success') {
+        setRequests(response.data.payload);
+      } else {
+        setError(response.data.message || 'Failed to fetch booking requests');
+      }
+    } catch (err) {
+      setError('Error fetching booking requests. Please try again.');
     }
-  } catch (err) {
-    setError('Error fetching booking requests. Please try again.');
-  }
-};
+  };
 
+  const updateRequestStatus = async (requestId, requestStatus) => {
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    const token = sessionStorage.getItem('token');
 
+    try {
+      const response = await axios.post(`${API_BASE_URL}/user/updateBookingRequest`, {
+        user,
+        token,
+        bookingRequestId: requestId,
+        requestStatus: requestStatus,
+      });
+
+      if (response.data.status === 'success') {
+        alert(response.data.message);
+        fetchBookingRequest(); // Refresh the list after updating status
+      } else {
+        setError(response.data.message || 'Failed to update booking request');
+      }
+    } catch (err) {
+      setError('Error updating booking request. Please try again.');
+    }
+  };
 
   useEffect(() => {
     fetchBookingRequest();
@@ -48,8 +67,7 @@ const BookingRequest = () => {
             <th>Name</th>
             <th>Owner Employee ID</th>
             <th>Status</th>
-            <th>Message</th>
-            
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -62,12 +80,28 @@ const BookingRequest = () => {
                 <td>{request.name}</td>
                 <td>{request.ownerEmployeeId}</td>
                 <td>{request.requestStatus}</td>
-                <td>{request.message}</td>
+                <td>
+                  <Button
+                    onClick={() => updateRequestStatus(request.requestId, 'accepted')}
+                    variant="success"
+                    className="me-2"
+                  >
+                    Accept
+                  </Button>
+                  <Button
+                    onClick={() => updateRequestStatus(request.requestId, 'rejected')}
+                    variant="danger"
+                  >
+                    Reject
+                  </Button>
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="7" className="text-center">No booking requests found</td>
+              <td colSpan="7" className="text-center">
+                No booking requests found
+              </td>
             </tr>
           )}
         </tbody>
@@ -76,4 +110,4 @@ const BookingRequest = () => {
   );
 };
 
-export default BookingRequest;
+export default BookingRequestApproval;
