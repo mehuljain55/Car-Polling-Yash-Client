@@ -8,6 +8,7 @@ import RoutesList from "../Vechile/RoutesList";
 import BuddyInfo from "../Bookings/BuddyInfo";
 import BookingDashboard from "../Bookings/BookingDashboard";
 import VechileApprovalList from "../ManagerComponents/VechileApprovalList";
+import UpdateProfile from "../UserProfile/UpdateProfile";
 
 const MainComponent = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -42,11 +43,16 @@ const MainComponent = () => {
         );
 
         case "addRoute":
-          return (
-            <div>
-              <AddRoute />
-            </div>
-          );
+  return (
+    <div>
+      {user.licence === "not_updated" ? (
+        <UpdateProfile setActiveSection={setActiveSection} />
+      ) : (
+        <AddRoute />
+      )}
+    </div>
+  );
+
 
           case "routesList":
             return (
