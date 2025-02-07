@@ -19,7 +19,10 @@ const BookingRequestApproval = () => {
 
       if (response.data.status === 'success') {
         setRequests(response.data.payload);
+      } else if (response.data.status === 'not_found') {
+        setRequests([]);
       } else {
+    
         setError(response.data.message || 'Failed to fetch booking requests');
       }
     } catch (err) {
@@ -41,10 +44,10 @@ const BookingRequestApproval = () => {
 
       if (response.data.status === 'success') {
         alert(response.data.message);
-        fetchBookingRequest(); // Refresh the list after updating status
       } else {
         setError(response.data.message || 'Failed to update booking request');
       }
+      fetchBookingRequest();
     } catch (err) {
       setError('Error updating booking request. Please try again.');
     }
