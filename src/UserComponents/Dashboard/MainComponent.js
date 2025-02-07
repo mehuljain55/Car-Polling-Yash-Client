@@ -9,6 +9,7 @@ import BuddyInfo from "../Bookings/BuddyInfo";
 import BookingDashboard from "../Bookings/BookingDashboard";
 import VechileApprovalList from "../ManagerComponents/VechileApprovalList";
 import UpdateProfile from "../UserProfile/UpdateProfile";
+import BookingRequestApproval from "../Bookings/BookingRequestApproval";
 
 const MainComponent = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -39,6 +40,13 @@ const MainComponent = () => {
         return (
           <div>
             <AddVechile />
+          </div>
+        );
+
+        case "BookingRequest":
+        return (
+          <div>
+            <BookingRequestApproval />
           </div>
         );
 
@@ -153,6 +161,23 @@ const MainComponent = () => {
                     onClick={() => setActiveSection("addRoute")}
                   >
                     Add Route
+                  </button>
+                </li>
+                
+              </ul>
+
+
+              <ul className="list-unstyled px-3">
+                <li>
+                  <button
+                    className={`btn btn-link text-decoration-none w-100 text-start ${
+                      activeSection === "BookingRequest"
+                        ? "fw-bold text-primary"
+                        : "text-dark"
+                    }`}
+                    onClick={() => setActiveSection("BookingRequest")}
+                  >
+                   Booking Request Approval
                   </button>
                 </li>
                 

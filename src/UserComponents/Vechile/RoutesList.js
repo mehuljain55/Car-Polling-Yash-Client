@@ -36,7 +36,7 @@ const RoutesList = () => {
         try {
             const response = await axios.post(`${API_BASE_URL}/user/createBooking`, requestData);
             if (response.data.status === "success") {
-                alert("Booking confirmed!");
+                alert(response.data.message);
             } else {
                 alert(response.data.message || "Failed to create booking.");
             }
@@ -131,7 +131,7 @@ const RoutesList = () => {
                 <tbody>
                     {routes.map((route, index) => (
                         <tr key={route.routeId}>
-                            <td>{index + 1}</td>
+                            <td>{route.routeId}</td>
                             <td>{route.vechile?.vechileName} ({route.vechile?.vechileNo})</td>
                             <td>{route.vechile?.available_capacity}</td>
                             <td>{route.user?.name} ({route.user?.mobileNo})</td>
