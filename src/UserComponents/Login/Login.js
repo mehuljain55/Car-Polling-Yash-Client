@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "../Config/Config";
 import "bootstrap/dist/css/bootstrap.min.css";
 import YashLogo from "../Image/yash.jpg"; 
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import icons for eye and eye-slash
+import { FaEye, FaEyeSlash } from "react-icons/fa"; 
 import axios from "axios";
 
 const Login = ({ setLoginStatus }) => {
@@ -44,7 +44,7 @@ const Login = ({ setLoginStatus }) => {
   };
   
   const handleRegister = () => {
-    navigate("/register", { replace: true }); // Redirect to dashboard
+    navigate("/register", { replace: true });
   };
 
   return (
