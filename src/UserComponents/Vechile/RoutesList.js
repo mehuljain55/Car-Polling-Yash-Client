@@ -3,48 +3,17 @@ import axios from "axios";
 import { Container, Form, Button, Table } from "react-bootstrap";
 import API_BASE_URL from "../Config/Config";
 import RouteTimeline from "./RouteTimeline";
+import Select from "react-select";
 
 const RoutesList = () => {
-    const [source, setSource] = useState("");
+    const [source, setSource] = useState(null);
     const [destination, setDestination] = useState("");
-    const [city, setCity] = useState(""); 
+    const [city, setCity] = useState("");
     const [routes, setRoutes] = useState([]);
-    const [offices, setOffices] = useState([]); 
-
-
-    const [selectedRoute, setSelectedRoute] = useState(null);
+    const [offices, setOffices] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
     const [showModal, setShowModal] = useState(false);
-
-    const handleView = (route) => {
-        console.log('View Routes'); 
-        setSelectedRoute(route);
-        setShowModal(true);
-    };
-    
-
-    const createBooking = async (routeId) => {
-     
-        const user = JSON.parse(sessionStorage.getItem('user'));
-        const token = sessionStorage.getItem('token');
-    
-        const requestData = {
-            user: user,
-            token: token, 
-            routeId: routeId, 
-        };
-
-        try {
-            const response = await axios.post(`${API_BASE_URL}/user/createBooking`, requestData);
-            if (response.data.status === "success") {
-                alert(response.data.message);
-            } else {
-                alert(response.data.message || "Failed to create booking.");
-            }
-        } catch (error) {
-            console.error("Error creating booking:", error);
-            alert("An error occurred while creating the booking.");
-        }
-    };
+    const [selectedRoute, setSelectedRoute] = useState(null);
 
     useEffect(() => {
         const fetchOffices = async () => {
@@ -57,20 +26,56 @@ const RoutesList = () => {
                 console.error("Error fetching offices:", error);
             }
         };
-
         fetchOffices();
     }, []);
+
+    const fetchSuggestions = async (query) => {
+        if (!query || query.length < 3) return;
+        try {
+            const response = await axios.get(`${API_BASE_URL}/routes/search`, {
+                params: { key: query.toUpperCase(), 
+                          city:city
+                         },
+            });
+            const formattedSuggestions = response.data.payload.map((item) => ({
+                value: item,
+                label: item,
+            }));
+
+            setSuggestions(formattedSuggestions);
+            console.log(formattedSuggestions);
+        } catch (error) {
+            console.error("Error fetching suggestions", error);
+            setSuggestions([]);
+        }
+    };
+
+    const handleInputChange = (inputValue) => {
+        fetchSuggestions(inputValue);
+    };
 
     const fetchRoutes = async () => {
         try {
             const response = await axios.get(`${API_BASE_URL}/routes/findRoutes`, {
-                params: { source, destination, city },
+                params: { source: source?.value, destination, city },
             });
             setRoutes(response.data.payload);
-            console.log("Routes");
-            console.log(response.data.payload);
         } catch (error) {
             console.error("Error fetching routes:", error);
+        }
+    };
+
+    const createBooking = async (routeId) => {
+        const user = JSON.parse(sessionStorage.getItem("user"));
+        const token = sessionStorage.getItem("token");
+        const requestData = { user, token, routeId };
+
+        try {
+            const response = await axios.post(`${API_BASE_URL}/user/createBooking`, requestData);
+            alert(response.data.message || "Failed to create booking.");
+        } catch (error) {
+            console.error("Error creating booking:", error);
+            alert("An error occurred while creating the booking.");
         }
     };
 
@@ -79,18 +84,8 @@ const RoutesList = () => {
             <h2>Find Routes</h2>
             <Form>
                 <Form.Group className="mb-3">
-                    <Form.Label>Source</Form.Label>
-                    <Form.Control 
-                        type="text" 
-                        placeholder="Enter source" 
-                        value={source} 
-                        onChange={(e) => setSource(e.target.value)} 
-                    />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
                     <Form.Label>Destination</Form.Label>
-                    <Form.Control 
+                    <Form.Control
                         as="select"
                         value={destination}
                         onChange={(e) => {
@@ -106,6 +101,18 @@ const RoutesList = () => {
                             </option>
                         ))}
                     </Form.Control>
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                    <Form.Label>Source</Form.Label>
+                    <Select
+                        options={suggestions}
+                        onInputChange={handleInputChange}
+                        onChange={setSource}
+                        value={source}
+                        placeholder="Enter source"
+                        isSearchable
+                    />
                 </Form.Group>
 
                 <Button variant="primary" onClick={fetchRoutes}>
@@ -129,20 +136,30 @@ const RoutesList = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {routes.map((route, index) => (
+                    {routes.map((route) => (
                         <tr key={route.routeId}>
                             <td>{route.routeId}</td>
-                            <td>{route.vechile?.vechileName} ({route.vechile?.vechileNo})</td>
+                            <td>
+                                {route.vechile?.vechileName} ({route.vechile?.vechileNo})
+                            </td>
                             <td>{route.vechile?.available_capacity}</td>
-                            <td>{route.user?.name} ({route.user?.mobileNo})</td>
+                            <td>
+                                {route.user?.name} ({route.user?.mobileNo})
+                            </td>
                             <td>{route.source}</td>
                             <td>{route.destination}</td>
-                            <td>{route.pickUpPlaces.map(p => p.places).join(", ")}</td>
+                            <td>{route.pickUpPlaces.map((p) => p.places).join(", ")}</td>
                             <td>{route.cost}</td>
                             <td>
                                 <Button onClick={() => createBooking(route.routeId)}>Book</Button>
-                                <Button onClick={() => handleView(route)}>View</Button>
-                            
+                                <Button
+                                    onClick={() => {
+                                        setSelectedRoute(route);
+                                        setShowModal(true);
+                                    }}
+                                >
+                                    View
+                                </Button>
                             </td>
                         </tr>
                     ))}
